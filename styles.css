@@ -1,0 +1,284 @@
+:root {
+    --primary-color: #e74c3c;
+    --secondary-color: #2c3e50;
+    --accent-color: #f39c12;
+    --green-color: #2ecc71;
+    --violet-color: #9b59b6;
+    --red-color: #e74c3c;
+    --dark-bg: #1a1a1a;
+    --light-bg: #f5f5f5;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: white;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: var(--secondary-color);
+    position: relative;
+}
+
+.app-header {
+    padding: 15px 0;
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.user-balance {
+    background-color: rgba(0,0,0,0.2);
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.app-main {
+    flex: 1;
+    padding: 20px 0;
+}
+
+.game-timer {
+    background-color: rgba(0,0,0,0.3);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.timer-display {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.round-number {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.game-board {
+    margin-bottom: 20px;
+}
+
+.result-history {
+    background-color: rgba(0,0,0,0.3);
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.history-title {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    opacity: 0.8;
+}
+
+.history-items {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.history-item {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.color-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.color-option {
+    flex: 1;
+    padding: 15px 0;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.color-option:active {
+    transform: scale(0.98);
+}
+
+.color-option.red {
+    background-color: var(--red-color);
+}
+
+.color-option.green {
+    background-color: var(--green-color);
+}
+
+.color-option.violet {
+    background-color: var(--violet-color);
+}
+
+.color-name {
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.multiplier {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.bet-amount {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.bet-controls {
+    background-color: rgba(0,0,0,0.3);
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.amount-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-amount {
+    flex: 1;
+    min-width: 60px;
+    background-color: rgba(255,255,255,0.1);
+    border: none;
+    color: white;
+    padding: 8px 0;
+    border-radius: 5px;
+}
+
+.current-amount {
+    display: flex;
+    gap: 10px;
+}
+
+.current-amount input {
+    flex: 1;
+    background-color: rgba(255,255,255,0.1);
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.btn-bet {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.app-nav {
+    display: flex;
+    background-color: var(--primary-color);
+    padding: 10px 0;
+}
+
+.nav-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: white;
+    padding: 10px 0;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.nav-btn.active {
+    color: var(--accent-color);
+}
+
+.modal-content {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.modal-header {
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-close {
+    filter: invert(1);
+}
+
+.wallet-balance {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.wallet-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.wallet-actions button {
+    flex: 1;
+}
+
+.transaction-history {
+    margin-top: 20px;
+}
+
+.transaction-item {
+    padding: 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+/* Responsive adjustments */
+@media (max-width: 400px) {
+    .color-name {
+        font-size: 1rem;
+    }
+    .multiplier {
+        font-size: 1.2rem;
+    }
+}
