@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery99 - Color Prediction Game</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-6">
+                        <h1 class="logo">Lottery99</h1>
+                    </div>
+                    <div class="col-6 text-end">
+                        <div class="user-balance">
+                            <span id="userBalance">₹0.00</span>
+                            <button class="btn btn-sm btn-warning" onclick="openWallet()">Wallet</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <div class="container">
+                <!-- Game Timer -->
+                <div class="game-timer">
+                    <div class="timer-display" id="gameTimer">00:00</div>
+                    <div class="round-number">Round: <span id="roundNumber">123456</span></div>
+                </div>
+
+                <!-- Game Board -->
+                <div class="game-board">
+                    <div class="result-history">
+                        <div class="history-title">Previous Results</div>
+                        <div class="history-items" id="historyItems"></div>
+                    </div>
+                    
+                    <div class="color-options">
+                        <div class="color-option red" onclick="placeBet('red')">
+                            <div class="color-name">RED</div>
+                            <div class="multiplier">2x</div>
+                            <div class="bet-amount" id="redBetAmount">₹0</div>
+                        </div>
+                        <div class="color-option green" onclick="placeBet('green')">
+                            <div class="color-name">GREEN</div>
+                            <div class="multiplier">5x</div>
+                            <div class="bet-amount" id="greenBetAmount">₹0</div>
+                        </div>
+                        <div class="color-option violet" onclick="placeBet('violet')">
+                            <div class="color-name">VIOLET</div>
+                            <div class="multiplier">10x</div>
+                            <div class="bet-amount" id="violetBetAmount">₹0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bet Controls -->
+                <div class="bet-controls">
+                    <div class="amount-buttons">
+                        <button class="btn btn-amount" onclick="setAmount(10)">10</button>
+                        <button class="btn btn-amount" onclick="setAmount(50)">50</button>
+                        <button class="btn btn-amount" onclick="setAmount(100)">100</button>
+                        <button class="btn btn-amount" onclick="setAmount(500)">500</button>
+                        <button class="btn btn-amount" onclick="setAmount(1000)">1000</button>
+                    </div>
+                    <div class="current-amount">
+                        <input type="number" id="betAmount" value="10" min="10">
+                        <button class="btn btn-bet" onclick="confirmBet()">BET</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation -->
+        <nav class="app-nav">
+            <button class="nav-btn active" onclick="showScreen('game')">
+                <i class="fas fa-gamepad"></i> Game
+            </button>
+            <button class="nav-btn" onclick="showScreen('history')">
+                <i class="fas fa-history"></i> History
+            </button>
+            <button class="nav-btn" onclick="showScreen('wallet')">
+                <i class="fas fa-wallet"></i> Wallet
+            </button>
+            <button class="nav-btn" onclick="showScreen('profile')">
+                <i class="fas fa-user"></i> Profile
+            </button>
+        </nav>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal fade" id="walletModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Wallet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="wallet-balance">
+                        <h3>Balance: ₹<span id="modalBalance">0.00</span></h3>
+                    </div>
+                    <div class="wallet-actions">
+                        <button class="btn btn-primary" onclick="showDeposit()">Deposit</button>
+                        <button class="btn btn-success" onclick="showWithdraw()">Withdraw</button>
+                    </div>
+                    <div id="depositSection" style="display:none;">
+                        <h4>Deposit Money</h4>
+                        <input type="number" id="depositAmount" placeholder="Amount" min="100">
+                        <button class="btn btn-primary" onclick="processDeposit()">Submit</button>
+                    </div>
+                    <div id="withdrawSection" style="display:none;">
+                        <h4>Withdraw Money</h4>
+                        <input type="number" id="withdrawAmount" placeholder="Amount" min="100">
+                        <input type="text" id="upiId" placeholder="UPI ID">
+                        <button class="btn btn-success" onclick="processWithdraw()">Submit</button>
+                    </div>
+                    <div class="transaction-history">
+                        <h4>Transaction History</h4>
+                        <div id="transactionHistory"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="loginModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Login / Register</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="loginForm">
+                        <input type="text" id="loginMobile" placeholder="Mobile Number" maxlength="10">
+                        <button class="btn btn-primary" onclick="sendOTP()">Send OTP</button>
+                    </div>
+                    <div id="otpForm" style="display:none;">
+                        <input type="text" id="otp" placeholder="Enter OTP" maxlength="6">
+                        <button class="btn btn-primary" onclick="verifyOTP()">Verify OTP</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Main JS -->
+    <script src="script.js"></script>
+    <!-- Firebase (for auth) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+</body>
+</html>
