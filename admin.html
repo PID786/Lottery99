@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lottery99 Admin Panel</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            min-height: 100vh;
+            background-color: #343a40;
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+        }
+        .stat-card.primary {
+            background-color: #007bff;
+        }
+        .stat-card.success {
+            background-color: #28a745;
+        }
+        .stat-card.warning {
+            background-color: #ffc107;
+        }
+        .stat-card.danger {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-dark">
+                <div class="position-sticky pt-3">
+                    <h4 class="text-center mb-4">Lottery99 Admin</h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" data-section="dashboard">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="users">
+                                <i class="fas fa-users me-2"></i>Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="transactions">
+                                <i class="fas fa-exchange-alt me-2"></i>Transactions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="withdrawals">
+                                <i class="fas fa-money-bill-wave me-2"></i>Withdrawals
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="game-control">
+                                <i class="fas fa-gamepad me-2"></i>Game Control
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-section="settings">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a>
+                        </li>
+                        <li class="nav-item mt-4">
+                            <button class="btn btn-danger w-100" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2" id="sectionTitle">Dashboard</h1>
+                </div>
+
+                <!-- Dashboard Section -->
+                <div id="dashboardSection">
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="stat-card primary">
+                                <h3 id="totalUsers">0</h3>
+                                <p>Total Users</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card success">
+                                <h3 id="todayDeposits">₹0</h3>
+                                <p>Today's Deposits</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card warning">
+                                <h3 id="pendingWithdrawals">0</h3>
+                                <p>Pending Withdrawals</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-card danger">
+                                <h3 id="totalProfit">₹0</h3>
+                                <p>Total Profit</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Recent Transactions</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table" id="recentTransactionsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>User</th>
+                                                    <th>Type</th>
+                                                    <th>Amount</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Filled by JS -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Game Results</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table" id="gameResultsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Round</th>
+                                                    <th>Result</th>
+                                                    <th>Time</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Filled by JS -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="usersSection" style="display: none;">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Users</h5>
+                            <div class="input-group" style="width: 300px;">
+                                <input type="text" class="form-control" placeholder="Search users..." id="userSearch">
+                                <button class="btn btn-outline-secondary" type="button" id="userSearchBtn">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="usersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Phone</th>
+                                            <th>Balance</th>
+                                            <th>Joined</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Filled by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Section -->
+                <div id="transactionsSection" style="display: none;">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Transactions</h5>
+                            <div>
+                                <select class="form-select me-2" style="width: 150px; display: inline-block;" id="transactionTypeFilter">
+                                    <option value="">All Types</option>
+                                    <option value="deposit">Deposit</option>
+                                    <option value="withdraw">Withdraw</option>
+                                    <option value="bet">Bet</option>
+                                    <option value="win">Win</option>
+                                </select>
+                                <input type="date" class="form-control me-2" style="width: 150px; display: inline-block;" id="transactionDateFilter">
+                                <button class="btn btn-primary" id="applyTransactionFilter">Apply</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="transactionsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>User</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                            <th>Description</th>
+                                            <th>Status</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Filled by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Withdrawals Section -->
+                <div id="withdrawalsSection" style="display: none;">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>Pending Withdrawals</h5>
+                            <div>
+                                <input type="date" class="form-control me-2" style="width: 150px; display: inline-block;" id="withdrawalDateFilter">
+                                <button class="btn btn-primary" id="applyWithdrawalFilter">Apply</button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped" id="withdrawalsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>User</th>
+                                            <th>Amount</th>
+                                            <th>UPI ID</th>
+                                            <th>Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Filled by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Control Section -->
+                <div id="gameControlSection" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Current Round</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Round Number</label>
+                                        <input type="text" class="form-control" id="currentRoundNumber" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Time Left</label>
+                                        <input type="text" class="form-control" id="currentRoundTimeLeft" readonly>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Set Result</label>
+                                        <select class="form-select" id="gameResultSelect">
+                                            <option value="">Select result</option>
+                                            <option value="red">Red</option>
+                                            <option value="green">Green</option>
+                                            <option value="violet">Violet</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary" id="setGameResultBtn">Set Result</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Manual Game Control</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Start New Round</label>
+                                        <button class="btn btn-success w-100" id="startNewRoundBtn">Start New Round</button>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Round Duration (minutes)</label>
+                                        <input type="number" class="form-control" id="roundDuration" value="3" min="1">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Game Settings</label>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="autoResultCheck" checked>
+                                            <label class="form-check-label" for="autoResultCheck">
+                                                Auto-generate results
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Settings Section -->
+                <div id="settingsSection" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>System Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="settingsForm">
+                                <div class="mb-3">
+                                    <label class="form-label">Minimum Deposit Amount</label>
+                                    <input type="number" class="form-control" name="minDeposit" value="100">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Minimum Withdrawal Amount</label>
+                                    <input type="number" class="form-control" name="minWithdraw" value="100">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Minimum Bet Amount</label>
+                                    <input type="number" class="form-control" name="minBet" value="10">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Payout Multipliers</label>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Red</label>
+                                            <input type="number" class="form-control" name="redMultiplier" value="2" step="0.1">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Green</label>
+                                            <input type="number" class="form-control" name="greenMultiplier" value="5" step="0.1">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Violet</label>
+                                            <input type="number" class="form-control" name="violetMultiplier" value="10" step="0.1">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Result Probabilities</label>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">Red (%)</label>
+                                            <input type="number" class="form-control" name="redProbability" value="45" min="1" max="100">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Green (%)</label>
+                                            <input type="number" class="form-control" name="greenProbability" value="30" min="1" max="100">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Violet (%)</label>
+                                            <input type="number" class="form-control" name="violetProbability" value="25" min="1" max="100">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Settings</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- User Details Modal -->
+    <div class="modal fade" id="userDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">User ID</label>
+                                <input type="text" class="form-control" id="modalUserId" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" id="modalUserPhone" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Balance</label>
+                                <input type="number" class="form-control" id="modalUserBalance">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Joined Date</label>
+                                <input type="text" class="form-control" id="modalUserJoined" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Total Deposits</label>
+                                <input type="text" class="form-control" id="modalUserDeposits" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Total Withdrawals</label>
+                                <input type="text" class="form-control" id="modalUserWithdrawals" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">User Transactions</label>
+                        <div class="table-responsive">
+                            <table class="table table-sm" id="userTransactionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                       <!-- Filled by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="saveUserBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transaction Details Modal -->
+    <div class="modal fade" id="transactionDetailsModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Transaction Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Transaction ID</label>
+                        <input type="text" class="form-control" id="modalTransactionId" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">User</label>
+                        <input type="text" class="form-control" id="modalTransactionUser" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Type</label>
+                        <input type="text" class="form-control" id="modalTransactionType" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Amount</label>
+                        <input type="text" class="form-control" id="modalTransactionAmount" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" id="modalTransactionDesc" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status</label>
+                        <input type="text" class="form-control" id="modalTransactionStatus" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        <input type="text" class="form-control" id="modalTransactionDate" readonly>
+                    </div>
+                    <div id="withdrawalDetails" style="display: none;">
+                        <div class="mb-3">
+                            <label class="form-label">UPI ID</label>
+                            <input type="text" class="form-control" id="modalTransactionUpi" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bank Details</label>
+                            <textarea class="form-control" id="modalTransactionBank" readonly rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="approveTransactionBtn" style="display: none;">Approve</button>
+                    <button type="button" class="btn btn-danger" id="rejectTransactionBtn" style="display: none;">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Admin Login</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-control" id="loginEmail">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" id="loginPassword">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="loginBtn">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDummyKeyDummyKeyDummyKeyDummy",
+            authDomain: "lottery99-dummy.firebaseapp.com",
+            projectId: "lottery99-dummy",
+            storageBucket: "lottery99-dummy.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:dummyappiddummyappid"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Admin App
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check auth state
+            auth.onAuthStateChanged((user) => {
+                if (user && user.email === 'admin@lottery99.com') {
+                    // Admin is logged in
+                    initAdminPanel();
+                } else {
+                    // Show login modal
+                    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                    loginModal.show();
+                }
+            });
+
+            // Login button
+            document.getElementById('loginBtn').addEventListener('click', function() {
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                
+                if (!email || !password) {
+                    alert('Please enter email and password');
+                    return;
+                }
+                
+                // For demo, we'll use a mock login
+                if (email === 'admin@lottery99.com' && password === 'admin123') {
+                    // Mock successful login
+                    auth.signInWithEmailAndPassword(email, password)
+                        .then(() => {
+                            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                            loginModal.hide();
+                            initAdminPanel();
+                        })
+                        .catch(error => {
+                            alert('Login error: ' + error.message);
+                        });
+                } else {
+                    alert('Invalid credentials. Use admin@lottery99.com / admin123 for demo.');
+                }
+            });
+
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                auth.signOut().then(() => {
+                    window.location.reload();
+                });
+            });
+
+            // Navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                });
+            });
+
+            // Initialize DataTables
+            $('#usersTable').DataTable();
+            $('#transactionsTable').DataTable();
+            $('#withdrawalsTable').DataTable();
+        });
+
+        function initAdminPanel() {
+            // Load dashboard data
+            loadDashboardData();
+            
+            // Load users
+            loadUsers();
+            
+            // Load transactions
+            loadTransactions();
+            
+            // Load withdrawals
+            loadWithdrawals();
+            
+            // Load current game round
+            loadCurrentRound();
+            
+            // Load game history
+            loadGameHistory();
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Start auto-refresh
+            setInterval(loadDashboardData, 30000); // Refresh every 30 seconds
+        }
+
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('[id$="Section"]').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // Show selected section
+            document.getElementById(section + 'Section').style.display = 'block';
+            document.getElementById('sectionTitle').textContent = document.querySelector(`[data-section="${section}"]`).textContent.trim();
+            
+            // Refresh section data
+            switch(section) {
+                case 'dashboard':
+                    loadDashboardData();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'transactions':
+                    loadTransactions();
+                    break;
+                case 'withdrawals':
+                    loadWithdrawals();
+                    break;
+                case 'game-control':
+                    loadCurrentRound();
+                    break;
+            }
+        }
+
+        function loadDashboardData() {
+            // Mock data for demo
+            document.getElementById('totalUsers').textContent = '1,245';
+            document.getElementById('todayDeposits').textContent = '₹24,500';
+            document.getElementById('pendingWithdrawals').textContent = '18';
+          document.getElementById('totalProfit').textContent = '₹1,02,345';
+            
+            // Recent transactions
+            const transactionsTable = document.querySelector('#recentTransactionsTable tbody');
+            transactionsTable.innerHTML = '';
+            
+            const mockTransactions = [
+                { user: 'User 1', type: 'Deposit', amount: '₹500', status: 'Completed' },
+                { user: 'User 2', type: 'Withdraw', amount: '₹1,000', status: 'Pending' },
+                { user: 'User 3', type: 'Bet', amount: '₹100', status: 'Completed' },
+                { user: 'User 4', type: 'Win', amount: '₹500', status: 'Completed' },
+                { user: 'User 5', type: 'Deposit', amount: '₹2,000', status: 'Completed' }
+            ];
+            
+            mockTransactions.forEach(txn => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${txn.user}</td>
+                    <td>${txn.type}</td>
+                    <td>${txn.amount}</td>
+                    <td><span class="badge ${txn.status === 'Pending' ? 'bg-warning' : 'bg-success'}">${txn.status}</span></td>
+                `;
+                transactionsTable.appendChild(row);
+            });
+        }
+
+        function loadUsers() {
+            // Mock data for demo
+            const usersTable = document.querySelector('#usersTable tbody');
+            usersTable.innerHTML = '';
+            
+            for (let i = 1; i <= 20; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>USER${1000 + i}</td>
+                    <td>+9198765432${i.toString().padStart(2, '0')}</td>
+                    <td>₹${(Math.random() * 5000).toFixed(2)}</td>
+                    <td>${new Date(Date.now() - (i * 24 * 60 * 60 * 1000)).toLocaleDateString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view-user-btn" data-id="USER${1000 + i}">View</button>
+                    </td>
+                `;
+                usersTable.appendChild(row);
+            }
+            
+            // Add event listeners to view buttons
+            document.querySelectorAll('.view-user-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-id');
+                    viewUserDetails(userId);
+                });
+            });
+        }
+
+        function loadTransactions() {
+            // Mock data for demo
+            const transactionsTable = document.querySelector('#transactionsTable tbody');
+            transactionsTable.innerHTML = '';
+            
+            const types = ['deposit', 'withdraw', 'bet', 'win'];
+            const statuses = ['completed', 'pending', 'rejected'];
+            
+            for (let i = 1; i <= 20; i++) {
+                const type = types[Math.floor(Math.random() * types.length)];
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                const amount = (Math.random() * 5000).toFixed(2);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>TXN${10000 + i}</td>
+                    <td>USER${1000 + Math.floor(Math.random() * 20)}</td>
+                    <td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>
+                    <td>₹${amount}</td>
+                    <td>${type === 'deposit' ? 'Deposit via UPI' : 
+                         type === 'withdraw' ? 'Withdrawal request' : 
+                         type === 'bet' ? 'Bet on round ' + (123450 + i) : 
+                         'Won from round ' + (123450 + i)}</td>
+                    <td><span class="badge ${status === 'pending' ? 'bg-warning' : status === 'completed' ? 'bg-success' : 'bg-danger'}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+                    <td>${new Date(Date.now() - (i * 60 * 60 * 1000)).toLocaleString()}</td>
+                `;
+                transactionsTable.appendChild(row);
+            }
+        }
+
+        function loadWithdrawals() {
+            // Mock data for demo
+            const withdrawalsTable = document.querySelector('#withdrawalsTable tbody');
+            withdrawalsTable.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                const amount = (Math.random() * 5000).toFixed(2);
+                const upiId = `user${i}@upi`;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>TXN${20000 + i}</td>
+                    <td>USER${1000 + Math.floor(Math.random() * 20)}</td>
+                    <td>₹${amount}</td>
+                    <td>${upiId}</td>
+                    <td>${new Date(Date.now() - (i * 60 * 60 * 1000)).toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success approve-withdrawal-btn" data-id="TXN${20000 + i}">Approve</button>
+                        <button class="btn btn-sm btn-danger reject-withdrawal-btn" data-id="TXN${20000 + i}">Reject</button>
+                    </td>
+                `;
+                withdrawalsTable.appendChild(row);
+            }
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.approve-withdrawal-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const txnId = this.getAttribute('data-id');
+                    approveWithdrawal(txnId);
+                });
+            });
+            
+            document.querySelectorAll('.reject-withdrawal-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const txnId = this.getAttribute('data-id');
+                    rejectWithdrawal(txnId);
+                });
+            });
+        }
+
+        function loadCurrentRound() {
+            // Mock data for demo
+            document.getElementById('currentRoundNumber').value = '123456';
+            
+            // Calculate time left (between 0 and 180 seconds)
+            const timeLeft = Math.floor(Math.random() * 180);
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('currentRoundTimeLeft').value = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function loadGameHistory() {
+            // Mock data for demo
+            const gameResultsTable = document.querySelector('#gameResultsTable tbody');
+            gameResultsTable.innerHTML = '';
+            
+            const colors = ['red', 'green', 'violet'];
+            
+            for (let i = 1; i <= 10; i++) {
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${123450 + i}</td>
+                    <td><span class="badge ${color === 'red' ? 'bg-danger' : color === 'green' ? 'bg-success' : 'bg-primary'}">${color.toUpperCase()}</span></td>
+                    <td>${new Date(Date.now() - (i * 3 * 60 * 1000)).toLocaleTimeString()}</td>
+                `;
+                gameResultsTable.appendChild(row);
+            }
+        }
+
+        function viewUserDetails(userId) {
+            // Mock data for demo
+            document.getElementById('modalUserId').value = userId;
+            document.getElementById('modalUserPhone').value = '+919876543210';
+            document.getElementById('modalUserBalance').value = (Math.random() * 5000).toFixed(2);
+            document.getElementById('modalUserJoined').value = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000)).toLocaleDateString();
+            document.getElementById('modalUserDeposits').value = '₹' + (Math.random() * 10000).toFixed(2);
+            document.getElementById('modalUserWithdrawals').value = '₹' + (Math.random() * 5000).toFixed(2);
+               // Load user transactions
+            const userTransactionsTable = document.querySelector('#userTransactionsTable tbody');
+            userTransactionsTable.innerHTML = '';
+            
+            const types = ['deposit', 'withdraw', 'bet', 'win'];
+            const statuses = ['completed', 'pending', 'rejected'];
+            
+            for (let i = 1; i <= 5; i++) {
+                const type = types[Math.floor(Math.random() * types.length)];
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                const amount = (Math.random() * 5000).toFixed(2);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${type.charAt(0).toUpperCase() + type.slice(1)}</td>
+                    <td>₹${amount}</td>
+                    <td><span class="badge ${status === 'pending' ? 'bg-warning' : status === 'completed' ? 'bg-success' : 'bg-danger'}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+                    <td>${new Date(Date.now() - (i * 60 * 60 * 1000)).toLocaleString()}</td>
+                `;
+                userTransactionsTable.appendChild(row);
+            }
+            
+            // Show modal
+            const userDetailsModal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
+            userDetailsModal.show();
+        }
+
+        function approveWithdrawal(txnId) {
+            if (confirm(`Approve withdrawal ${txnId}?`)) {
+                alert(`Withdrawal ${txnId} approved successfully!`);
+                // In a real app, this would call the API to approve the withdrawal
+                loadWithdrawals();
+                loadDashboardData();
+            }
+        }
+
+        function rejectWithdrawal(txnId) {
+            if (confirm(`Reject withdrawal ${txnId}?`)) {
+                alert(`Withdrawal ${txnId} rejected successfully!`);
+                // In a real app, this would call the API to reject the withdrawal
+                loadWithdrawals();
+                loadDashboardData();
+            }
+        }
+
+        function setupEventListeners() {
+            // Save user button
+            document.getElementById('saveUserBtn').addEventListener('click', function() {
+                const newBalance = document.getElementById('modalUserBalance').value;
+                alert(`User balance updated to ₹${newBalance}`);
+                
+                const userDetailsModal = bootstrap.Modal.getInstance(document.getElementById('userDetailsModal'));
+                userDetailsModal.hide();
+            });
+            
+            // Set game result button
+            document.getElementById('setGameResultBtn').addEventListener('click', function() {
+                const result = document.getElementById('gameResultSelect').value;
+                if (!result) {
+                    alert('Please select a result');
+                    return;
+                }
+                
+                if (confirm(`Set game result to ${result}? This will calculate all payouts.`)) {
+                    alert(`Game result set to ${result}. Payouts calculated.`);
+                    // In a real app, this would call the API to set the result
+                    loadCurrentRound();
+                    loadGameHistory();
+                    document.getElementById('gameResultSelect').value = '';
+                }
+            });
+            
+            // Start new round button
+            document.getElementById('startNewRoundBtn').addEventListener('click', function() {
+                const duration = document.getElementById('roundDuration').value;
+                if (!duration || duration < 1) {
+                    alert('Please enter a valid duration (minimum 1 minute)');
+                    return;
+                }
+                
+                if (confirm(`Start new game round with ${duration} minute duration?`)) {
+                    alert(`New round started with ${duration} minute duration.`);
+                    // In a real app, this would call the API to start a new round
+                    loadCurrentRound();
+                }
+            });
+            
+            // Settings form
+            document.getElementById('settingsForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Settings saved successfully!');
+                // In a real app, this would call the API to save settings
+            });
+            
+            // Transaction filter
+            document.getElementById('applyTransactionFilter').addEventListener('click', function() {
+                const type = document.getElementById('transactionTypeFilter').value;
+                const date = document.getElementById('transactionDateFilter').value;
+                alert(`Filtering transactions by type: ${type || 'all'}, date: ${date || 'all'}`);
+                // In a real app, this would reload transactions with filters
+            });
+            
+            // Withdrawal filter
+            document.getElementById('applyWithdrawalFilter').addEventListener('click', function() {
+                const date = document.getElementById('withdrawalDateFilter').value;
+                alert(`Filtering withdrawals by date: ${date || 'all'}`);
+                // In a real app, this would reload withdrawals with filters
+            });
+        }
+    </script>
+</body>
+</html>
