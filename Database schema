@@ -1,0 +1,40 @@
+// Users collection
+{
+    _id: ObjectId,
+    uid: String, // Firebase UID
+    phoneNumber: String,
+    balance: Number,
+    createdAt: Date
+}
+
+// Transactions collection
+{
+    _id: ObjectId,
+    userId: ObjectId, // Reference to User
+    type: String, // 'deposit', 'withdraw', 'win', 'bet'
+    amount: Number,
+    description: String,
+    status: String, // 'pending', 'completed', 'rejected'
+    createdAt: Date
+}
+
+// GameRounds collection
+{
+    _id: ObjectId,
+    roundNumber: Number,
+    result: String, // 'red', 'green', 'violet'
+    startTime: Date,
+    endTime: Date
+}
+
+// Bets collection
+{
+    _id: ObjectId,
+    userId: ObjectId, // Reference to User
+    roundNumber: Number,
+    color: String, // 'red', 'green', 'violet'
+    amount: Number,
+    payout: Number, // Only if won
+    status: String, // 'pending', 'won', 'lost'
+    placedAt: Date
+}
